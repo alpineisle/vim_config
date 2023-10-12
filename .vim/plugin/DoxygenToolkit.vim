@@ -257,7 +257,6 @@
 " let g:DoxygenToolkit_licenseTag="My own license"   <-- Does not end with
 " "\<enter>"
 
-
 " Verify if already loaded
 "if exists("loaded_DoxygenToolkit")
 " echo 'DoxygenToolkit Already Loaded.'
@@ -856,9 +855,9 @@ function! s:StartDocumentationBlock()
     "exec "normal O".s:startCommentTag
     exec "normal O".strpart( s:startCommentTag, 0, 1 )
     exec "normal A".substitute( strpart( s:startCommentTag, 1 ), "[[:blank:]]*$", "", "" )
-    let l:insertionMode = "o"
+    let l:insertionMode = "o\<Space>"
   else
-    let l:insertionMode = "O"
+    let l:insertionMode = "O\<Space>"
   endif
   return l:insertionMode
 endfunction

@@ -16,6 +16,8 @@ set smartindent
 set tabstop=8
 " set indent with to 8 spaces
 set shiftwidth=8
+" set tab and indent with of python files to 4 spaces
+autocmd FileType python setlocal tabstop=4 shiftwidth=4
 
 " wrap lines at 100 characters
 set textwidth=100

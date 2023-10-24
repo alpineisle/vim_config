@@ -14,10 +14,14 @@ set smartindent
 
 " set tab width to 8 spaces
 set tabstop=8
-" set indent with to 8 spaces
+" set indent width to 8 spaces
 set shiftwidth=8
-" set tab and indent with of python files to 4 spaces
+" set tab and indent width of python files to 4 spaces
 autocmd FileType python setlocal tabstop=4 shiftwidth=4
+" set tab and indent with for yaml/yml files to 2 spaces
+autocmd FileType yaml setlocal tabstop=2 shiftwidth=2
+" set tab and indent with for vim files to 2 spaces
+autocmd FileType vim setlocal tabstop=2 shiftwidth=2
 
 " wrap lines at 100 characters
 set textwidth=100

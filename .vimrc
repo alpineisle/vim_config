@@ -18,17 +18,21 @@ set tabstop=8
 set shiftwidth=8
 " set tab and indent width of python files to 4 spaces
 autocmd FileType python setlocal tabstop=4 shiftwidth=4
-" set tab and indent with for yaml/yml files to 2 spaces
+" set tab and indent width for yaml/yml files to 2 spaces
 autocmd FileType yaml setlocal tabstop=2 shiftwidth=2
-" set tab and indent with for vim files to 2 spaces
-autocmd FileType vim setlocal tabstop=2 shiftwidth=2
+" set tab and indent width for vim files to 2 spaces
+autocmd FileType vim setlocal tabstop=4 shiftwidth=4
 
 " wrap lines at 100 characters
 set textwidth=100
 
-" turn syntax highlighting on
+" interpret h file as c file
+let g:c_syntax_for_h = 1
+" enable displaying 256 colors
 set t_Co=256
+" turn syntax highlighting on
 syntax on
+" using colorscheme wombat256mod
 colorscheme wombat256mod
 
 " turn line numbers on
@@ -65,6 +69,8 @@ set wildignore=*.pdf,*.png,*.pyc,/bin
 set laststatus=2
 " set statusline
 set statusline=\ %f%m%r%h%w\ %=%({%{&ff}\|%{(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\")}%k\|%Y}%)\ %([%l,%v][%p%%]\ %)
+" set tabline
+set tabline=%!MyTabLine()
 
 " MAPPINGS
 nnoremap <Space> <Nop>
@@ -75,15 +81,18 @@ nnoremap <Leader>h :set invhls<CR>
 nnoremap <Leader>O O<Esc>
 " insert empty line below and exit insert mode
 nnoremap <Leader>o o<Esc>
+" switch between source and header file (if they are in the same directory)
+noremap <Leader>n :call SwitchSrcHeader()<CR>
 
-fu! MyTabLabel(n)
+function MyTabLabel(n)
 	let buflist = tabpagebuflist(a:n)
 	let winnr = tabpagewinnr(a:n)
 	let string = fnamemodify(bufname(buflist[winnr - 1]), ':t')
 	return empty(string) ? '[unnamed]' : string
-endfu
+endfunction
 
-fu! MyTabLine()
+" Functions
+function MyTabLine()
 	let s = ''
 	for i in range(tabpagenr('$'))
 		" select the highlighting
@@ -97,13 +106,43 @@ fu! MyTabLine()
 		let s .= ' ' . (i+1) . ' '
 
 		" the label is made by MyTabLabel()
-		let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+		let s .= '%{MyTabLabel(' . (i + 1) . ')}'
 
 		if i+1 < tabpagenr('$')
 			let s .= ' |'
+		else
+			let s .= ' '
 		endif
 	endfor
 	return s
-endfu
+endfunction
 
-set tabline=%!MyTabLine()
+function SwitchSrcHeader()
+	" path without extension
+	let path_woe = expand('%<:p')
+	" flietype extension
+	let e = expand('%:e')
+
+	if e == 'c'
+		let s = 'h'
+		let s2 = 'header'
+	elseif e == 'h'
+		let s = 'c'
+		let s2 = 'source'
+	else
+		echo 'Error: file not a C source or header file'
+		return
+	endif
+
+	let file = path_woe . '.' . s
+	if filereadable(file)
+		if buflisted(file)
+			execute ':b ' . file
+		else
+			execute ':e ' . file
+		endif
+	else
+		echo 'Error: ' . file . ' does not exist'
+	endif
+endfunction
+

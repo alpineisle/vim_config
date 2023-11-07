@@ -18,8 +18,8 @@ set tabstop=8
 set shiftwidth=8
 " set tab and indent width of python files to 4 spaces
 autocmd FileType python setlocal tabstop=4 shiftwidth=4
-" set tab and indent width for yaml/yml files to 2 spaces
-autocmd FileType yaml setlocal tabstop=2 shiftwidth=2
+" set tab and indent width for yaml/yml files to 2 spaces and convert tab to spaces
+autocmd FileType yaml setlocal tabstop=2 shiftwidth=2 expandtab
 " set tab and indent width for vim files to 2 spaces
 autocmd FileType vim setlocal tabstop=4 shiftwidth=4
 
@@ -84,6 +84,7 @@ nnoremap <Leader>o o<Esc>
 " switch between source and header file (if they are in the same directory)
 noremap <Leader>n :call SwitchSrcHeader()<CR>
 
+" Functions
 function MyTabLabel(n)
 	let buflist = tabpagebuflist(a:n)
 	let winnr = tabpagewinnr(a:n)
@@ -91,7 +92,6 @@ function MyTabLabel(n)
 	return empty(string) ? '[unnamed]' : string
 endfunction
 
-" Functions
 function MyTabLine()
 	let s = ''
 	for i in range(tabpagenr('$'))
@@ -125,10 +125,8 @@ function SwitchSrcHeader()
 
 	if e == 'c'
 		let s = 'h'
-		let s2 = 'header'
 	elseif e == 'h'
 		let s = 'c'
-		let s2 = 'source'
 	else
 		echo 'Error: file not a C source or header file'
 		return
@@ -137,8 +135,10 @@ function SwitchSrcHeader()
 	let file = path_woe . '.' . s
 	if filereadable(file)
 		if buflisted(file)
+			execute ':w'
 			execute ':b ' . file
 		else
+			execute ':w'
 			execute ':e ' . file
 		endif
 	else

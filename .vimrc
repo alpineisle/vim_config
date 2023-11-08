@@ -72,6 +72,8 @@ set statusline=\ %f%m%r%h%w\ %=%({%{&ff}\|%{(&fenc==\"\"?&enc:&fenc).((exists(\"
 " set tabline
 set tabline=%!MyTabLine()
 
+set visualbell
+
 " MAPPINGS
 nnoremap <Space> <Nop>
 let mapleader="\<Space>"
@@ -83,6 +85,14 @@ nnoremap <Leader>O O<Esc>
 nnoremap <Leader>o o<Esc>
 " switch between source and header file (if they are in the same directory)
 noremap <Leader>n :call SwitchSrcHeader()<CR>
+" put last yanked
+noremap <Leader>p "0p
+noremap <Leader>P "0P
+" replace word under cursor with last yanked
+noremap <Leader>rw dw"0P
+noremap <Leader>riw diw"0P
+" replace line with last yanked
+noremap <Leader>rr dd"0P
 
 " Functions
 function MyTabLabel(n)
